@@ -17,5 +17,6 @@ char *_getenv(const char *name);
 void execmd(char **argv);
 char *get_location(char *command);
 int stat(const char *pathname, struct stat *statbuf);
+extern char **environ;
 
 #endif
