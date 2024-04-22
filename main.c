@@ -26,7 +26,6 @@ int main(int ac, char **argv)
 		nchars_read = getline(&lineptr, &n, stdin);
 		if (nchars_read == -1)
 		{
-			printf("Exiting shell....\n");
 			return (-1);
 		}
 
@@ -62,7 +61,6 @@ int main(int ac, char **argv)
 
 		if (argv[0] != NULL && strcmp(argv[0], "exit") == 0)
 		{
-			printf("Exiting shell ...\n");
 			break;
 		}
 
