@@ -29,7 +29,7 @@ int main(int ac, char **argv)
 			return (-1);
 		}
 
-		lineptr_copy = malloc(sizeof(char) * nchars_read);
+		lineptr_copy = malloc(sizeof(char) * nchars_read + 1);
 		if (lineptr_copy == NULL)
 		{
 			perror("tsh: memory allocation error");
@@ -46,13 +46,13 @@ int main(int ac, char **argv)
 		}
 		num_tokens++;
 
-		argv = malloc(sizeof(char *) * num_tokens);
+		argv = malloc(sizeof(char *) * num_tokens + 1);
 
 		token = strtok(lineptr_copy, delim);
 
 		for (i = 0; token != NULL; i++)
 		{
-			argv[i] = malloc(sizeof(char) * strlen(token));
+			argv[i] = malloc(sizeof(char) * strlen(token) + 1);
 			strcpy(argv[i], token);
 
 			token = strtok(NULL, delim);
