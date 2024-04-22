@@ -1,5 +1,12 @@
 #include "shell.h"
 
+/*
+ * get_location - function to get the location of a command
+ * @command: command to find
+ *
+ * Return: location of the command or NULL if not found
+ */
+
 char *get_location(char *command){
 	char *path, *path_copy, *path_token, *file_path;
 	int command_length, directory_length;

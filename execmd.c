@@ -1,9 +1,16 @@
 #include "shell.h"
 
+/*
+ * execmd - function to execute a command
+ * @argv: An array of arguments
+ * Description: forks a new process and executes a command
+ *
+ */
+
 void execmd(char **argv)
 {
 	char *command = NULL, *actual_command = NULL;
-	pid_t pid = fork(); // tout en dessous éxécuté deux fois
+	pid_t pid = fork(); /* tout en dessous éxécuté deux fois */
 	int status;
 
 	if (pid == -1)
@@ -31,13 +38,13 @@ void execmd(char **argv)
 		}
 	}
 
-	else // pid > 0 donc c'est le code du parent
+	else /* pid > 0 donc c'est le code du parent */
 	{
-		wait (&status); //wait for child to finish
+		wait (&status); /*wait for child to finish*/
 
-		if (WIFEXITED(status)) // check if child process exited normally
+		if (WIFEXITED(status)) /*check if child process exited normally*/
 		{
-			if (WEXITSTATUS(status) != 0) //check status exit of child process
+			if (WEXITSTATUS(status) != 0) /*check status exit of child process*/
 			{
 				free(argv);
 				exit(2);
