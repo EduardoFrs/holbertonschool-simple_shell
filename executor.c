@@ -85,7 +85,8 @@ void execute_command(char **parsed_command, char *program_name, char **env)
 
 	if (!cmd_path)
 	{
-		fprintf(stderr, "%s: No such file or directory %s\n", program_name, parsed_command[0]);
+		fprintf(stderr, "%s: ", program_name);
+		perror(parsed_command[0]);
 		return;
 	}
 
