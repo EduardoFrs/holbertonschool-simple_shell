@@ -1,5 +1,12 @@
 #include "shell.h"
 
+/**
+ * execmd - function to execute a command
+ * @argv: An array of arguments
+ * Description: forks a new process and executes a command
+ *
+ */
+
 void execmd(char **argv)
 {
 	char *command = NULL, *actual_command = NULL;

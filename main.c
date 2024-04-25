@@ -1,5 +1,13 @@
 #include "shell.h"
 
+/**
+ * main - Entry point for the shell program
+ * @ac: Number of arguments passed to the program
+ * @argv: An array of pointers to the arguments
+ *
+ * Return: If an error occurs, return -1. Otherwise 0
+ */
+
 int main(int ac, char **argv)
 {
 	char *prompt = "(Eshell) $ ";
