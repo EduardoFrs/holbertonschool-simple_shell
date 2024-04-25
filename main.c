@@ -27,6 +27,8 @@ int main(int ac, char **argv)
 		nchars_read = getline(&lineptr, &n, stdin);
 		if (nchars_read == -1)
 		{
+            perror("Error reading input");
+            free(lineptr);
 			return (-1);
 		}
 
