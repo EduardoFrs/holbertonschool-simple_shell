@@ -1,103 +1,32 @@
 #include "shell.h"
 
 /**
- * main - Entry point for the shell program
- * @ac: Number of arguments passed to the program
- * @argv: An array of pointers to the arguments
- *
- * Return: If an error occurs, return -1. Otherwise 0
+ * main - entry point for our simple shell program, checks for interactive
+ *  or non-interactive
+ * @argc: count of command line arguments
+ * @argv: command line arguments array
+ * Return: 0 if successful exit
  */
 
-int main(int ac, char **argv)
+int main(int argc, char **argv)
 {
-	char *prompt = "$ ";
-	char *lineptr = NULL;
-	size_t n = 0;
-	ssize_t nchars_read;
-	const char *delim = " \n";
-	char *token;
-	int num_tokens;
-	int i;
-	char *lineptr_copy;
+	char *input_line;
+	char *newline = "\n";
+	(void)argc;
 
-	(void)ac;
-
-	if (isatty(STDIN_FILENO))
+	while (1)
 	{
-		printf("%s", prompt);
-	}
-
-	while ((nchars_read = getline(&lineptr, &n, stdin)) != -1)
-	{
-		if (nchars_read > 1)
+		prompt_and_read_input(&input_line);
+		if (!input_line)
 		{
-			argv = NULL;
-			num_tokens = 0;
-			lineptr_copy = strdup(lineptr);
-			if (lineptr_copy == NULL)
+			if (isatty(STDIN_FILENO))
 			{
-				perror("tsh: memory allocation error");
-				free(lineptr);
-				return -1;
+				write(STDOUT_FILENO, newline, strlen(newline));
 			}
-
-			token = strtok(lineptr_copy, delim);
-			while (token != NULL)
-			{
-				num_tokens++;
-				token = strtok(NULL, delim);
-			}
-			argv = calloc(num_tokens + 1, sizeof(char*));
-			if (argv == NULL)
-			{
-				perror("Memory allocation failed");
-				free(lineptr_copy);
-				free(lineptr);
-				return -1;
-			}
-
-			i = 0;
-			token = strtok(lineptr_copy, delim);
-			while (token != NULL)
-			{
-				argv[i++] = strdup(token);
-				token = strtok(NULL, delim);
-			}
-			argv[i] = NULL;
-
-			if (argv[0] != NULL && strcmp(argv[0], "exit") == 0)
-			{
-				for (i = 0; argv[i]; i++)
-				{
-					free(argv[i]);
-				}
-				free(argv);
-				free(lineptr_copy);
-				break;
-			}
-
-			execmd(argv);
-
-			for (i = 0; argv[i]; i++)
-			{
-				free(argv[i]);
-			}
-			free(argv);
-			free(lineptr_copy);
+			break;
 		}
-
-		if (isatty(STDIN_FILENO))
-		{
-			printf("%s", prompt);
-		}
-	}
-
-	free(lineptr);
-
-	if (ferror(stdin))
-	{
-		perror("Error reading from input");
-		return (-1);
+		process_command(input_line, argv, environ);
+		free(input_line);
 	}
 
 	return (0);
