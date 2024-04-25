@@ -27,7 +27,9 @@ void process_command(char *input_line, char **argv, char **env)
 {
 	char **parsed_command;
 
-	input_line[strcspn(input_line, "\n")] = 0;
+	char *newline_ptr = strpbrk(input_line, "\n");
+	if (newline_ptr != NULL)
+		*newline_ptr = '\0';
 
 	if (!is_empty(input_line))
 	{
