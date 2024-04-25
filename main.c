@@ -10,78 +10,95 @@
 
 int main(int ac, char **argv)
 {
-    /*	char *prompt = "$ ";*/
-	char *lineptr = NULL, *lineptr_copy = NULL;
+	char *prompt = "$ ";
+	char *lineptr = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
 	const char *delim = " \n";
-	int num_tokens = 0;
 	char *token;
+	int num_tokens;
 	int i;
+	char *lineptr_copy;
 
 	(void)ac;
 
-	while (1)
+	if (isatty(STDIN_FILENO))
 	{
-		nchars_read = getline(&lineptr, &n, stdin);
-		if (nchars_read == -1)
-		{
-            /*printf("%s", prompt);*/
-            perror("Error reading input");
-            free(lineptr);
-			return (-1);
-		}
-
-		lineptr_copy = malloc(sizeof(char) * nchars_read);
-		if (lineptr_copy == NULL)
-		{
-			perror("tsh: memory allocation error");
-			return (-1);
-		}
-		strcpy(lineptr_copy, lineptr);
-
-		token = strtok(lineptr, delim);
-
-		while (token != NULL)
-		{
-			num_tokens++;
-			token = strtok(NULL, delim);
-		}
-		num_tokens++;
-
-		argv = malloc(sizeof(char *) * num_tokens);
-
-		token = strtok(lineptr_copy, delim);
-
-		for (i = 0; token != NULL; i++)
-		{
-			argv[i] = malloc(sizeof(char) * strlen(token));
-			strcpy(argv[i], token);
-
-			token = strtok(NULL, delim);
-		}
-		argv[i] = NULL;
-
-		if (argv[0] != NULL && strcmp(argv[0], "exit") == 0)
-		{
-			break;
-		}
-
-		if (argv[0] != NULL && strcmp(argv[0], "env") == 0)
-		{
-			char **env = environ;
-
-			while (*env)
-			{
-				printf("%s\n", *env);
-				env++;
-			}
-			continue;
-		}
-		execmd(argv);
+		printf("%s", prompt);
 	}
-	free(lineptr_copy);
+
+	while ((nchars_read = getline(&lineptr, &n, stdin)) != -1)
+	{
+		if (nchars_read > 1)
+		{
+			argv = NULL;
+			num_tokens = 0;
+			lineptr_copy = strdup(lineptr);
+			if (lineptr_copy == NULL)
+			{
+				perror("tsh: memory allocation error");
+				free(lineptr);
+				return -1;
+			}
+
+			token = strtok(lineptr_copy, delim);
+			while (token != NULL)
+			{
+				num_tokens++;
+				token = strtok(NULL, delim);
+			}
+			argv = calloc(num_tokens + 1, sizeof(char*));
+			if (argv == NULL)
+			{
+				perror("Memory allocation failed");
+				free(lineptr_copy);
+				free(lineptr);
+				return -1;
+			}
+
+			i = 0;
+			token = strtok(lineptr_copy, delim);
+			while (token != NULL)
+			{
+				argv[i++] = strdup(token);
+				token = strtok(NULL, delim);
+			}
+			argv[i] = NULL;
+
+			if (argv[0] != NULL && strcmp(argv[0], "exit") == 0)
+			{
+				for (i = 0; argv[i]; i++)
+				{
+					free(argv[i]);
+				}
+				free(argv);
+				free(lineptr_copy);
+				break;
+			}
+
+			execmd(argv);
+
+			for (i = 0; argv[i]; i++)
+			{
+				free(argv[i]);
+			}
+			free(argv);
+			free(lineptr_copy);
+		}
+
+		if (isatty(STDIN_FILENO))
+		{
+			printf("%s", prompt);
+		}
+	}
+
 	free(lineptr);
+
+	if (ferror(stdin))
+	{
+		perror("Error reading from input");
+		return (-1);
+	}
 
 	return (0);
 }
