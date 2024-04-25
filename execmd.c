@@ -43,7 +43,7 @@ void execmd(char **argv)
 			if (WEXITSTATUS(status) != 0) /*check status exit of child process*/
 			{
 				free(argv);
-				exit(2);
+				exit(1);
 			}
 		}
 
