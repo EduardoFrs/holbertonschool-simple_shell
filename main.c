@@ -10,7 +10,7 @@
 
 int main(int ac, char **argv)
 {
-	char *prompt = "(Eshell) $ ";
+	char *prompt = "$ ";
 	char *lineptr = NULL, *lineptr_copy = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
