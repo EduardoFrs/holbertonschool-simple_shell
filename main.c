@@ -10,7 +10,7 @@
 
 int main(int ac, char **argv)
 {
-    char *prompt = "(Shell) $ ";
+	char *prompt = "(Shell) $ ";
 	char *lineptr = NULL, *lineptr_copy = NULL;
 	size_t n = 0;
 	ssize_t nchars_read;
@@ -27,8 +27,8 @@ int main(int ac, char **argv)
 		nchars_read = getline(&lineptr, &n, stdin);
 		if (nchars_read == -1)
 		{
-            perror("Error reading input");
-            free(lineptr);
+			perror("Error reading input");
+			free(lineptr);
 			return (-1);
 		}
 
