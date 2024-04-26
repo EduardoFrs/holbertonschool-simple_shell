@@ -1,5 +1,5 @@
-#ifndef _SHELL_MAIN_HEADER_
-#define _SHELL_MAIN_HEADER_
+#ifndef SHELL_H
+#define SHELL_H
 
 /*---------LIBRARIES---------*/
 
